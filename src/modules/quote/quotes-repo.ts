@@ -73,8 +73,6 @@ const reducer = (
       };
     }
     case LOAD_QUOTE: {
-      console.log("HIT");
-
       return {
         ...quotesState,
         quotePm: action.payload.quotesPm,

@@ -17,7 +17,5 @@ export const dispatch = async (func: unknown) => {
 };
 
 export const select = (func: any) => {
-  console.log("store: ", store);
-
   return func(store.getState());
 };
