@@ -11,3 +11,5 @@
 ```
 npm run dev
 ```
+
+Stop time: 2.15 hours.
