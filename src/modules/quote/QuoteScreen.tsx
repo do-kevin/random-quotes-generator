@@ -52,25 +52,29 @@ export const QuoteScreen = () => {
 
   console.log("quoteStatus: ", quoteStatus);
 
+  const isLoading = quoteStatus === "LOADING";
+  const onFailure = quoteStatus === "FAILURE";
+  const onSuccess = quoteStatus === "SUCCESS";
+
   return (
     <main>
-      {quoteStatus === "LOADING" && (
+      {isLoading && (
         <article>
           <p>Loading random quote...</p>
         </article>
       )}
-      {quoteStatus === "FAILURE" && (
+      {onFailure && (
         <article>
           <p>We could not get the quote. Please try again later.</p>
 
           <button onClick={() => loadRandomQuote()}>Try again</button>
         </article>
       )}
-      {quoteStatus === "SUCCESS" && (
+      {onSuccess && (
         <article>
           <q>{quoteVm?.quote}</q>
-
-          <footer>- {quoteVm?.author}</footer>
+          <p>- {quoteVm?.author}</p>
+          <button onClick={() => loadRandomQuote()}>Get a quote!</button>
         </article>
       )}
       <button
