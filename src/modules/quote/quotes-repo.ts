@@ -26,6 +26,10 @@ export const loadQuote =
     _getState: AppGetState,
     { httpGateway }: { httpGateway: HttpGateway }
   ) => {
+    dispatch({
+      type: LOADING_QUOTE,
+    });
+
     const quoteDto = await httpGateway.get("/random");
 
     const quotePm = await quoteDto.json();
