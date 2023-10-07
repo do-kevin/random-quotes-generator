@@ -114,6 +114,7 @@ export const QuoteScreen = () => {
     padding: "1rem",
     borderRadius: "10px",
     maxWidth: "40rem",
+    color: "#242424",
   };
 
   const quoteBtnStyles: React.CSSProperties = {
@@ -174,8 +175,9 @@ export const QuoteScreen = () => {
             background: "white",
             marginBottom: "0.5rem",
             textAlign: "center",
-            padding: "0.5rem",
+            padding: "0.5rem 1rem",
             borderRadius: "10px",
+            color: "#242424",
           }}
         >
           Showing next quote in {count}
