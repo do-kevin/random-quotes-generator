@@ -4,10 +4,65 @@
   padding: 0;
 }
 
-#quotecontainer {
+.quotecontainer {
   display: flex;
   min-height: 100vh;
   width: 100vw;
   background-size: 250% 100%;
   background-position: right bottom;
+}
+
+.quotecontainer:after {
+  content: "";
+  position: fixed;
+  display: block;
+  width: 230%;
+  height: 395%;
+  bottom: -125%;
+  left: -11%;
+  transform: translateY(-100%);
+  rotate: 225deg;
+  background-position: center;
+}
+
+.bg-red {
+  background-color: red;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.bg-purple {
+  background-color: purple;
+}
+
+.quote-container--red.quotecontainer:after {
+  background-color: red;
+}
+
+.quote-container--purple.quotecontainer:after {
+  background-color: purple;
+}
+
+@media screen and (min-width: 768px) {
+  .quotecontainer:after {
+    bottom: -136%;
+  }
+}
+
+.diagonal-wipe.quotecontainer:after {
+  transform: translateY(0%);
+  animation-name: wipe;
+  animation-duration: 1200ms;
+}
+
+@keyframes wipe {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0%);
+  }
 }

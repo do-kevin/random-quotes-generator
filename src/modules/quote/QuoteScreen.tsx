@@ -8,23 +8,14 @@ export const QuoteScreen = () => {
   const [count, setCount] = useState(7);
   const countRef = useRef(count);
 
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
 
-  const [prevColor, setPrevColor] = useState({ color: "#f2f2f2", index: 0 });
+  const [showWipe, setShowWipe] = useState<boolean>(true);
 
-  const [newColor, setNewColor] = useState({ color: "pink", index: 1 });
+  const [containerTheme, setContainerTheme] = useState("bg-white");
+  const [wipeTheme, setWipeTheme] = useState("quote-container--red");
 
-  const [backgroundPosition, setBackgroundPosition] = useState<{
-    X: "right" | "left";
-    Y: "bottom" | "top";
-  }>({
-    X: "right",
-    Y: "bottom",
-  });
-
-  const [transition, setTransition] = useState<
-    "background-position 0.7s ease" | "none"
-  >("background-position 0.7s ease");
+  const [themeCount, setThemeCount] = useState<number>(0);
 
   const dispatch = useAppDispatch();
 
@@ -36,41 +27,35 @@ export const QuoteScreen = () => {
     return Math.floor(Math.random() * arr.length);
   };
 
-  const setRandomColor = () => {
-    setBackgroundPosition({
-      X: "right",
-      Y: "bottom",
-    });
-    setTransition("none");
-
-    const colors = ["#f2f2f2", "pink", "#94287D", "lightblue", "#AB7506"];
-
-    let randomIndex = 0;
-    do {
-      randomIndex = getRandomIndex(colors);
-    } while (randomIndex === prevColor.index);
-
-    const nextColor = { color: colors[randomIndex], index: randomIndex };
-
-    setPrevColor((currentPrevColor) => {
-      setNewColor({ ...currentPrevColor });
-
-      return nextColor;
-    });
-
-    setTimeout(() => {
-      setBackgroundPosition({
-        X: "left",
-        Y: "top",
-      });
-      setTransition("background-position 0.7s ease");
-    }, 700);
-  };
-
   const loadRandomQuote = () => {
-    setRandomColor();
+    if (themeCount === 0) {
+      setWipeTheme("quote-container--red");
+    }
+
+    if (themeCount === 1) {
+      setWipeTheme("quote-container--purple");
+    }
+
+    setShowWipe(true);
 
     dispatch<any>(presenter.loadQuote());
+
+    setTimeout(() => {
+      setShowWipe(false);
+      if (themeCount === 0) {
+        setContainerTheme("bg-red");
+      }
+
+      if (themeCount === 1) {
+        setContainerTheme("bg-purple");
+      }
+
+      setThemeCount(themeCount + 1);
+
+      if (themeCount === 1) {
+        setThemeCount(0);
+      }
+    }, 1200);
   };
 
   const togglePause = () => {
@@ -115,21 +100,20 @@ export const QuoteScreen = () => {
     borderRadius: "10px",
     maxWidth: "40rem",
     color: "#242424",
+    zIndex: 1,
   };
 
   const quoteBtnStyles: React.CSSProperties = {
     background: "#5dc55d",
     color: "white",
+    zIndex: 1,
   };
 
   return (
     <main
-      id="quotecontainer"
-      style={{
-        backgroundImage: `linear-gradient(45deg, ${newColor.color} 50%, ${prevColor.color} 50%)`,
-        backgroundPosition: `${backgroundPosition.X} ${backgroundPosition.Y}`,
-        transition,
-      }}
+      className={`quotecontainer ${
+        showWipe && "diagonal-wipe"
+      } ${containerTheme} ${wipeTheme}`}
     >
       {isLoading && (
         <article style={quoteCardStyles}>
@@ -168,6 +152,7 @@ export const QuoteScreen = () => {
           position: "absolute",
           bottom: "1rem",
           right: "1rem",
+          zIndex: 1,
         }}
       >
         <p
