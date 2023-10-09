@@ -1,25 +1,65 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../core/store";
-
+import { Counter } from "./Counter";
 import * as presenter from "./quotes-presenter";
 
+type ThemeKeys = "primary" | "secondary" | "tertiary" | "quaternary";
+
+type ThemesType = Record<
+  ThemeKeys,
+  {
+    wipeClass: string;
+    quoteClass: string;
+    afterWipeClass: string;
+  }
+>;
+
 export const QuoteScreen = () => {
+  const themes: ThemesType = {
+    primary: {
+      wipeClass: "quote-container--pink",
+      quoteClass: "font-bold font-poppins text-1 md-text-2 text-turquoise",
+      afterWipeClass: "bg-pink",
+    },
+    secondary: {
+      wipeClass: "quote-container--lavender",
+      quoteClass: "font-bold font-playfair text-1 md-text-2 text-olivegreen",
+      afterWipeClass: "bg-lavender",
+    },
+    tertiary: {
+      wipeClass: "quote-container--darkgreen",
+      quoteClass: "font-bold font-nunito text-1 md-text-2 text-gold",
+      afterWipeClass: "bg-darkgreen",
+    },
+    quaternary: {
+      wipeClass: "quote-container--wheat",
+      quoteClass: "font-bold font-playfair text-1 md-text-2 text-plum",
+      afterWipeClass: "bg-wheat",
+    },
+  };
+
+  const [prevThemeIndex, setPrevThemeIndex] = useState<number>(0);
+
+  const themeKeys = Object.keys(themes) as ThemeKeys[];
+
+  console.log(Object.keys(themes));
+
   const [count, setCount] = useState(7);
   const countRef = useRef(count);
 
   const [isPaused, setIsPaused] = useState(false);
 
   const [quoteClassName, setQuoteClassName] = useState(
-    "font-bold font-poppins text-lg text-mint-green"
+    themes.primary.quoteClass
   );
 
   const [showWipe, setShowWipe] = useState<boolean>(true);
 
-  const [containerTheme, setContainerTheme] = useState("bg-white");
-  const [wipeTheme, setWipeTheme] = useState("quote-container--red");
-
-  const [themeCount, setThemeCount] = useState<number>(0);
+  const [containerTheme, setContainerTheme] = useState(
+    themes.primary.afterWipeClass
+  );
+  const [wipeTheme, setWipeTheme] = useState(themes.primary.wipeClass);
 
   const dispatch = useAppDispatch();
 
@@ -27,42 +67,35 @@ export const QuoteScreen = () => {
 
   const quoteStatus = useAppSelector(presenter.selectQuoteStatus);
 
-  const getRandomIndex = (arr: unknown[]) => {
-    return Math.floor(Math.random() * arr.length);
+  const getRandomIndex = (arr: unknown[], excludeIndex: number) => {
+    let randomIndex = null;
+
+    do {
+      randomIndex = Math.floor(Math.random() * arr.length);
+    } while (randomIndex === excludeIndex);
+
+    return randomIndex;
   };
 
   const loadRandomQuote = () => {
     setCount(7);
 
-    if (themeCount === 0) {
-      setWipeTheme("quote-container--red");
-      setQuoteClassName("font-bold font-poppins text-lg text-mint-green");
-    }
+    const randomIndex = getRandomIndex(themeKeys, prevThemeIndex);
 
-    if (themeCount === 1) {
-      setWipeTheme("quote-container--purple");
-      setQuoteClassName("font-bold font-playfair text-lg text-vanilla");
-    }
+    setWipeTheme(themes[themeKeys[randomIndex]].wipeClass);
+    setQuoteClassName(themes[themeKeys[randomIndex]].quoteClass);
+
+    console.log("randomIndex: ", randomIndex);
 
     setShowWipe(true);
 
     dispatch<any>(presenter.loadQuote());
 
+    setPrevThemeIndex(randomIndex);
+
     setTimeout(() => {
       setShowWipe(false);
-      if (themeCount === 0) {
-        setContainerTheme("bg-red");
-      }
-
-      if (themeCount === 1) {
-        setContainerTheme("bg-purple");
-      }
-
-      setThemeCount(themeCount + 1);
-
-      if (themeCount === 1) {
-        setThemeCount(0);
-      }
+      setContainerTheme(themes[themeKeys[randomIndex]].afterWipeClass);
     }, 1200);
   };
 
@@ -132,18 +165,23 @@ export const QuoteScreen = () => {
     >
       {isLoading && (
         <article style={quoteCardStyles}>
-          <p className="text-lg">
+          <p className={quoteClassName}>
             <em>Loading random quote...</em>
           </p>
         </article>
       )}
       {onFailure && (
         <article style={quoteCardStyles}>
-          <p className="text-lg">
+          <p className={quoteClassName}>
             We could not get the quote. Please try again later.
           </p>
 
-          <button style={quoteBtnStyles} onClick={() => loadRandomQuote()}>
+          <button
+            style={quoteBtnStyles}
+            onClick={() => {
+              loadRandomQuote();
+            }}
+          >
             Try again
           </button>
         </article>
@@ -153,7 +191,7 @@ export const QuoteScreen = () => {
           <blockquote style={{ fontWeight: "bold" }} className={quoteClassName}>
             {quoteVm?.quote}
             <footer
-              className="text-md font-normal"
+              className="font-normal text-0 md-text-1"
               style={{ marginTop: "1rem" }}
             >
               - <em>{quoteVm?.author}</em>
@@ -163,7 +201,6 @@ export const QuoteScreen = () => {
           <button
             style={quoteBtnStyles}
             onClick={() => {
-              //   setIsPaused(true);
               loadRandomQuote();
             }}
           >
@@ -191,21 +228,7 @@ export const QuoteScreen = () => {
           }}
         >
           {isPaused ? "▶️" : "| |"}
-          <span
-            style={{
-              position: "absolute",
-              marginLeft: "0.05rem",
-              bottom: "1.25rem",
-              background: "#618be4",
-              color: "white",
-              padding: "0.2rem 0.5rem",
-              borderRadius: "25px",
-              textAlign: "center",
-              cursor: "default",
-            }}
-          >
-            {count}
-          </span>
+          <Counter count={count} />
         </button>
       </aside>
     </main>

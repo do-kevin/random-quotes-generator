@@ -1,3 +1,100 @@
+:root {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+
+  --box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --darkgreen: #013220;
+  --gold: #ffd700;
+  --lavender: #e6e6fa;
+  --olivegreen: #808000;
+  --pink: #ffc0cb;
+  --plum: #a352a3;
+  --red: red;
+  --turquoise: #24b3a7;
+  --wheat: #f5deb3;
+  --white: white;
+  --mintgreen: #68fb9c;
+  --vanilla: #fff8e8;
+}
+
+.bg-gold {
+  background-color: var(--gold);
+}
+
+.bg-darkgreen {
+  background-color: var(--darkgreen);
+}
+
+.bg-olivegreen {
+  background-color: var(--olivegreen);
+}
+
+.bg-red {
+  background-color: var(--red);
+}
+
+.bg-white {
+  background-color: var(--white);
+}
+
+.bg-lavender {
+  background-color: var(--lavender);
+}
+
+.bg-turquoise {
+  background-color: var(--turquoise);
+}
+
+.bg-pink {
+  background-color: var(--pink);
+}
+
+.bg-plum {
+  background-color: var(--plum);
+}
+
+.bg-wheat {
+  background-color: var(--wheat);
+}
+
+.text-gold {
+  color: var(--gold);
+}
+
+.text-darkgreen {
+  color: var(--darkgreen);
+}
+
+.text-turquoise {
+  color: var(--turquoise);
+}
+
+.text-pink {
+  color: var(--pink);
+}
+
+.text-olivegreen {
+  color: var(--olivegreen);
+}
+
+.text-plum {
+  color: var(--plum);
+}
+
+.text-wheat {
+  color: var(--wheat);
+}
+
+.text-mintgreen {
+  color: var(--mintgreen);
+}
+
+.text-vanilla {
+  color: var(--vanilla);
+}
+
 .font-nunito {
   font-family: "Nunito Sans", sans-serif;
 }
@@ -21,18 +118,23 @@
   font-weight: 400;
 }
 
-.text-md {
-  font-size: 2.25rem;
+.text-0 {
+  font-size: 1.25rem;
 }
 
-.text-lg {
+.text-1 {
+  font-size: 1.5rem;
+}
+
+.text-2 {
   font-size: 3rem;
 }
 
-.text-mintgreen {
-  color: #68fb9c;
-}
-
-.text-vanilla {
-  color: #fff8e8;
+@media screen and (min-width: 768px) {
+  .md-text-1 {
+    font-size: 1.5rem;
+  }
+  .md-text-2 {
+    font-size: 3rem;
+  }
 }

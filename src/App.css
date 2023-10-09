@@ -1,9 +1,3 @@
-:root {
-  width: 100%;
-  height: 100%;
-  padding: 0;
-}
-
 .quotecontainer {
   display: flex;
   min-height: 100vh;
@@ -25,30 +19,49 @@
   background-position: center;
 }
 
-.bg-red {
-  background-color: red;
-}
-
-.bg-white {
-  background-color: white;
-}
-
-.bg-purple {
-  background-color: purple;
-}
-
 .quote-container--red.quotecontainer:after {
-  background-color: red;
+  background-color: var(--red);
+  box-shadow: var(--box-shadow);
 }
 
-.quote-container--purple.quotecontainer:after {
-  background-color: purple;
+.quote-container--turquoise.quotecontainer:after {
+  background-color: var(--turquoise);
+  box-shadow: var(--box-shadow);
 }
 
-@media screen and (min-width: 768px) {
-  .quotecontainer:after {
-    bottom: -136%;
-  }
+.quote-container--pink.quotecontainer:after {
+  background-color: var(--pink);
+  box-shadow: var(--box-shadow);
+}
+
+.quote-container--lavender.quotecontainer:after {
+  background-color: var(--lavender);
+  box-shadow: var(--box-shadow);
+}
+
+.quote-container--gold.quotecontainer:after {
+  background-color: var(--gold);
+  box-shadow: var(--box-shadow);
+}
+
+.quote-container--darkgreen.quotecontainer:after {
+  background-color: var(--darkgreen);
+  box-shadow: var(--box-shadow);
+}
+
+.quote-container--olivegreen.quotecontainer:after {
+  background-color: var(--olivegreen);
+  box-shadow: var(--box-shadow);
+}
+
+.quote-container--plum.quotecontainer:after {
+  background-color: var(--plum);
+  box-shadow: var(--box-shadow);
+}
+
+.quote-container--wheat.quotecontainer:after {
+  background-color: var(--wheat);
+  box-shadow: var(--box-shadow);
 }
 
 .diagonal-wipe.quotecontainer:after {
@@ -64,5 +77,11 @@
 
   to {
     transform: translateY(0%);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .quotecontainer:after {
+    bottom: -136%;
   }
 }

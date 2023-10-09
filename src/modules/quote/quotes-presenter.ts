@@ -16,6 +16,10 @@ export const selectQuoteVm = (state: RootState) => {
     state.quotesState.quotePm.currentQuote
   );
 
+  if (currentQuote.author === "nknown") {
+    currentQuote.author = "Unknown";
+  }
+
   if (currentQuote.author === "uddha") {
     currentQuote.author = "Buddha";
   }
