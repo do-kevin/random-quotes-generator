@@ -8,7 +8,11 @@ export const QuoteScreen = () => {
   const [count, setCount] = useState(7);
   const countRef = useRef(count);
 
-  const [isPaused, setIsPaused] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const [quoteClassName, setQuoteClassName] = useState(
+    "font-bold font-poppins text-lg text-mint-green"
+  );
 
   const [showWipe, setShowWipe] = useState<boolean>(true);
 
@@ -28,12 +32,16 @@ export const QuoteScreen = () => {
   };
 
   const loadRandomQuote = () => {
+    setCount(7);
+
     if (themeCount === 0) {
       setWipeTheme("quote-container--red");
+      setQuoteClassName("font-bold font-poppins text-lg text-mint-green");
     }
 
     if (themeCount === 1) {
       setWipeTheme("quote-container--purple");
+      setQuoteClassName("font-bold font-playfair text-lg text-vanilla");
     }
 
     setShowWipe(true);
@@ -95,18 +103,25 @@ export const QuoteScreen = () => {
   const quoteCardStyles: React.CSSProperties = {
     margin: "auto",
     textAlign: "center",
-    background: "white",
     padding: "1rem",
     borderRadius: "10px",
-    maxWidth: "40rem",
+    maxWidth: "80rem",
     color: "#242424",
     zIndex: 1,
   };
 
   const quoteBtnStyles: React.CSSProperties = {
-    background: "#5dc55d",
+    background: "linear-gradient(345deg, rgb(84 205 59), rgb(128 219 214)",
     color: "white",
     zIndex: 1,
+    border: "none",
+    fontSize: "1rem",
+    padding: "1rem 2rem",
+    borderRadius: "25px",
+    fontWeight: 700,
+    cursor: "pointer",
+    boxShadow:
+      "rgb(0 0 0 / 10%) 0px 10px 15px -3px, rgb(0 0 0 / 10%) 0px 4px 6px -4px",
   };
 
   return (
@@ -117,12 +132,16 @@ export const QuoteScreen = () => {
     >
       {isLoading && (
         <article style={quoteCardStyles}>
-          <p>Loading random quote...</p>
+          <p className="text-lg">
+            <em>Loading random quote...</em>
+          </p>
         </article>
       )}
       {onFailure && (
         <article style={quoteCardStyles}>
-          <p>We could not get the quote. Please try again later.</p>
+          <p className="text-lg">
+            We could not get the quote. Please try again later.
+          </p>
 
           <button style={quoteBtnStyles} onClick={() => loadRandomQuote()}>
             Try again
@@ -131,15 +150,20 @@ export const QuoteScreen = () => {
       )}
       {onSuccess && (
         <article style={quoteCardStyles}>
-          <blockquote style={{ fontWeight: "bold" }}>
+          <blockquote style={{ fontWeight: "bold" }} className={quoteClassName}>
             {quoteVm?.quote}
-            <footer style={{ fontWeight: 400 }}>- {quoteVm?.author}</footer>
+            <footer
+              className="text-md font-normal"
+              style={{ marginTop: "1rem" }}
+            >
+              - <em>{quoteVm?.author}</em>
+            </footer>
           </blockquote>
 
           <button
             style={quoteBtnStyles}
             onClick={() => {
-              setIsPaused(true);
+              //   setIsPaused(true);
               loadRandomQuote();
             }}
           >
@@ -149,26 +173,39 @@ export const QuoteScreen = () => {
       )}
       <aside
         style={{
-          position: "absolute",
-          bottom: "1rem",
-          right: "1rem",
+          position: "fixed",
+          bottom: "1.5rem",
+          right: "1.5rem",
           zIndex: 1,
         }}
       >
-        <p
+        <button
+          onClick={() => togglePause()}
           style={{
-            background: "white",
-            marginBottom: "0.5rem",
-            textAlign: "center",
-            padding: "0.5rem",
-            borderRadius: "10px",
-            color: "#242424",
+            background: "#f2f2f2",
+            padding: "0.3rem 1rem",
+            border: "1px solid #5D5D5D",
+            borderRadius: "4px",
+            cursor: "pointer",
+            color: "#5D5D5D",
           }}
         >
-          Showing next quote in {count}
-        </p>
-        <button onClick={() => togglePause()}>
-          {isPaused ? "| | Pause" : "|> Play"}
+          {isPaused ? "▶️" : "| |"}
+          <span
+            style={{
+              position: "absolute",
+              marginLeft: "0.05rem",
+              bottom: "1.25rem",
+              background: "#618be4",
+              color: "white",
+              padding: "0.2rem 0.5rem",
+              borderRadius: "25px",
+              textAlign: "center",
+              cursor: "default",
+            }}
+          >
+            {count}
+          </span>
         </button>
       </aside>
     </main>

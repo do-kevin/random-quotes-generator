@@ -1,0 +1,38 @@
+.font-nunito {
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.font-oswald {
+  font-family: "Oswald", sans-serif;
+}
+.font-playfair {
+  font-family: "Playfair", serif;
+}
+
+.font-poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.text-md {
+  font-size: 2.25rem;
+}
+
+.text-lg {
+  font-size: 3rem;
+}
+
+.text-mintgreen {
+  color: #68fb9c;
+}
+
+.text-vanilla {
+  color: #fff8e8;
+}
