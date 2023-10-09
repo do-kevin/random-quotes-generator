@@ -1,30 +1,65 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../core/store";
-
+import { Counter } from "./Counter";
 import * as presenter from "./quotes-presenter";
 
+type ThemeKeys = "primary" | "secondary" | "tertiary" | "quaternary";
+
+type ThemesType = Record<
+  ThemeKeys,
+  {
+    wipeClass: string;
+    quoteClass: string;
+    afterWipeClass: string;
+  }
+>;
+
 export const QuoteScreen = () => {
+  const themes: ThemesType = {
+    primary: {
+      wipeClass: "quote-container--pink",
+      quoteClass: "font-bold font-poppins text-1 md-text-2 text-turquoise",
+      afterWipeClass: "bg-pink",
+    },
+    secondary: {
+      wipeClass: "quote-container--lavender",
+      quoteClass: "font-bold font-playfair text-1 md-text-2 text-olivegreen",
+      afterWipeClass: "bg-lavender",
+    },
+    tertiary: {
+      wipeClass: "quote-container--darkgreen",
+      quoteClass: "font-bold font-nunito text-1 md-text-2 text-gold",
+      afterWipeClass: "bg-darkgreen",
+    },
+    quaternary: {
+      wipeClass: "quote-container--wheat",
+      quoteClass: "font-bold font-playfair text-1 md-text-2 text-plum",
+      afterWipeClass: "bg-wheat",
+    },
+  };
+
+  const [prevThemeIndex, setPrevThemeIndex] = useState<number>(0);
+
+  const themeKeys = Object.keys(themes) as ThemeKeys[];
+
+  console.log(Object.keys(themes));
+
   const [count, setCount] = useState(7);
   const countRef = useRef(count);
 
   const [isPaused, setIsPaused] = useState(false);
 
-  const [prevColor, setPrevColor] = useState({ color: "#f2f2f2", index: 0 });
+  const [quoteClassName, setQuoteClassName] = useState(
+    themes.primary.quoteClass
+  );
 
-  const [newColor, setNewColor] = useState({ color: "pink", index: 1 });
+  const [showWipe, setShowWipe] = useState<boolean>(true);
 
-  const [backgroundPosition, setBackgroundPosition] = useState<{
-    X: "right" | "left";
-    Y: "bottom" | "top";
-  }>({
-    X: "right",
-    Y: "bottom",
-  });
-
-  const [transition, setTransition] = useState<
-    "background-position 0.7s ease" | "none"
-  >("background-position 0.7s ease");
+  const [containerTheme, setContainerTheme] = useState(
+    themes.primary.afterWipeClass
+  );
+  const [wipeTheme, setWipeTheme] = useState(themes.primary.wipeClass);
 
   const dispatch = useAppDispatch();
 
@@ -32,45 +67,36 @@ export const QuoteScreen = () => {
 
   const quoteStatus = useAppSelector(presenter.selectQuoteStatus);
 
-  const getRandomIndex = (arr: unknown[]) => {
-    return Math.floor(Math.random() * arr.length);
-  };
+  const getRandomIndex = (arr: unknown[], excludeIndex: number) => {
+    let randomIndex = null;
 
-  const setRandomColor = () => {
-    setBackgroundPosition({
-      X: "right",
-      Y: "bottom",
-    });
-    setTransition("none");
-
-    const colors = ["#f2f2f2", "pink", "#94287D", "lightblue", "#AB7506"];
-
-    let randomIndex = 0;
     do {
-      randomIndex = getRandomIndex(colors);
-    } while (randomIndex === prevColor.index);
+      randomIndex = Math.floor(Math.random() * arr.length);
+    } while (randomIndex === excludeIndex);
 
-    const nextColor = { color: colors[randomIndex], index: randomIndex };
-
-    setPrevColor((currentPrevColor) => {
-      setNewColor({ ...currentPrevColor });
-
-      return nextColor;
-    });
-
-    setTimeout(() => {
-      setBackgroundPosition({
-        X: "left",
-        Y: "top",
-      });
-      setTransition("background-position 0.7s ease");
-    }, 700);
+    return randomIndex;
   };
 
   const loadRandomQuote = () => {
-    setRandomColor();
+    setCount(7);
+
+    const randomIndex = getRandomIndex(themeKeys, prevThemeIndex);
+
+    setWipeTheme(themes[themeKeys[randomIndex]].wipeClass);
+    setQuoteClassName(themes[themeKeys[randomIndex]].quoteClass);
+
+    console.log("randomIndex: ", randomIndex);
+
+    setShowWipe(true);
 
     dispatch<any>(presenter.loadQuote());
+
+    setPrevThemeIndex(randomIndex);
+
+    setTimeout(() => {
+      setShowWipe(false);
+      setContainerTheme(themes[themeKeys[randomIndex]].afterWipeClass);
+    }, 1200);
   };
 
   const togglePause = () => {
@@ -110,51 +136,71 @@ export const QuoteScreen = () => {
   const quoteCardStyles: React.CSSProperties = {
     margin: "auto",
     textAlign: "center",
-    background: "white",
     padding: "1rem",
     borderRadius: "10px",
-    maxWidth: "40rem",
+    maxWidth: "80rem",
+    color: "#242424",
+    zIndex: 1,
   };
 
   const quoteBtnStyles: React.CSSProperties = {
-    background: "#5dc55d",
+    background: "linear-gradient(345deg, rgb(84 205 59), rgb(128 219 214)",
     color: "white",
+    zIndex: 1,
+    border: "none",
+    fontSize: "1rem",
+    padding: "1rem 2rem",
+    borderRadius: "25px",
+    fontWeight: 700,
+    cursor: "pointer",
+    boxShadow:
+      "rgb(0 0 0 / 10%) 0px 10px 15px -3px, rgb(0 0 0 / 10%) 0px 4px 6px -4px",
   };
 
   return (
     <main
-      id="quotecontainer"
-      style={{
-        backgroundImage: `linear-gradient(45deg, ${newColor.color} 50%, ${prevColor.color} 50%)`,
-        backgroundPosition: `${backgroundPosition.X} ${backgroundPosition.Y}`,
-        transition,
-      }}
+      className={`quotecontainer ${
+        showWipe && "diagonal-wipe"
+      } ${containerTheme} ${wipeTheme}`}
     >
       {isLoading && (
         <article style={quoteCardStyles}>
-          <p>Loading random quote...</p>
+          <p className={quoteClassName}>
+            <em>Loading random quote...</em>
+          </p>
         </article>
       )}
       {onFailure && (
         <article style={quoteCardStyles}>
-          <p>We could not get the quote. Please try again later.</p>
+          <p className={quoteClassName}>
+            We could not get the quote. Please try again later.
+          </p>
 
-          <button style={quoteBtnStyles} onClick={() => loadRandomQuote()}>
+          <button
+            style={quoteBtnStyles}
+            onClick={() => {
+              loadRandomQuote();
+            }}
+          >
             Try again
           </button>
         </article>
       )}
       {onSuccess && (
         <article style={quoteCardStyles}>
-          <blockquote style={{ fontWeight: "bold" }}>
+          <blockquote style={{ fontWeight: "bold" }} className={quoteClassName}>
             {quoteVm?.quote}
-            <footer style={{ fontWeight: 400 }}>- {quoteVm?.author}</footer>
+            <footer
+              className="font-normal text-0 md-text-1"
+              style={{ marginTop: "1rem" }}
+            >
+              - <em>{quoteVm?.author}</em>
+            </footer>
           </blockquote>
 
           <button
             style={quoteBtnStyles}
             onClick={() => {
-              setIsPaused(true);
               loadRandomQuote();
             }}
           >
@@ -164,24 +210,25 @@ export const QuoteScreen = () => {
       )}
       <aside
         style={{
-          position: "absolute",
-          bottom: "1rem",
-          right: "1rem",
+          position: "fixed",
+          bottom: "1.5rem",
+          right: "1.5rem",
+          zIndex: 1,
         }}
       >
-        <p
+        <button
+          onClick={() => togglePause()}
           style={{
-            background: "white",
-            marginBottom: "0.5rem",
-            textAlign: "center",
-            padding: "0.5rem",
-            borderRadius: "10px",
+            background: "#f2f2f2",
+            padding: "0.3rem 1rem",
+            border: "1px solid #5D5D5D",
+            borderRadius: "4px",
+            cursor: "pointer",
+            color: "#5D5D5D",
           }}
         >
-          Showing next quote in {count}
-        </p>
-        <button onClick={() => togglePause()}>
-          {isPaused ? "| | Pause" : "|> Play"}
+          {isPaused ? "▶️" : "| |"}
+          <Counter count={count} />
         </button>
       </aside>
     </main>

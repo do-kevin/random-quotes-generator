@@ -11,5 +11,22 @@ export const selectQuoteStatus = (state: RootState) => {
 };
 
 export const selectQuoteVm = (state: RootState) => {
-  return state.quotesState.quotePm.currentQuote;
+  const currentQuote = Object.assign(
+    {},
+    state.quotesState.quotePm.currentQuote
+  );
+
+  if (currentQuote.author === "nknown") {
+    currentQuote.author = "Unknown";
+  }
+
+  if (currentQuote.author === "uddha") {
+    currentQuote.author = "Buddha";
+  }
+
+  if (currentQuote.author === "im Rohn") {
+    currentQuote.author = "Jim Rohn";
+  }
+
+  return currentQuote;
 };
