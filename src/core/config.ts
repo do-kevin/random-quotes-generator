@@ -2,6 +2,6 @@ export class Config {
   apiUrl: string;
 
   constructor() {
-    this.apiUrl = "http://safetybelt.pythonanywhere.com/quotes";
+    this.apiUrl = "https://safetybelt.pythonanywhere.com/quotes";
   }
 }
